@@ -77,21 +77,20 @@
 			var firstWithPkrsAndPowerCount = 0;
 			var chainWithPkrsAndPowerCount = 0;
 
-			if (firstWithPkrsAndPower+current<=target){
-				current += firstWithPkrsAndPower;
-				firstWithPkrsAndPowerCount++;
-			}
+
 			while (chainWithPkrsAndPower+current<=target){
 				current += chainWithPkrsAndPower;
 				chainWithPkrsAndPowerCount++;
 			}
-			if (firstWithPkrs+current<=target){
-				current += firstWithPkrs;
-				firstWithPkrsCount++;
-			}
+
 			while (chainWithPkrs+current<=target){
 				current += chainWithPkrs;
 				chainWithPkrsCount++;
+			}
+
+			while (firstWithPkrsAndPower+current<=target){
+				current += firstWithPkrsAndPower;
+				firstWithPkrsAndPowerCount++;
 			}
 
 			while (firstWithPkrs+current<=target){
