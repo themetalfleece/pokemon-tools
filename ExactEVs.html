@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<style>
+		#calculator {
+			margin: 20px;
+		}
+		.result {
+			font-weight: bold
+		}
+		input {
+			margin: 2px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="calculator">
+		<span class="label">EVs each Pokemon you defeat give:</span>
+		<br>
+		<input type="number" id="base" min=1 max=3 value=1>
+		<br>
+		<span class="label">Target EVs (how many EVs you need to have):</span>
+		<br>
+		<input type="number" id="target" min=2 max=252 step=2 value=128>
+		<br>
+		<span class="label">Starting EVs (how many EVs your Pokemon currently has):</span>
+		<br>
+		<input type="number" id="starting" min=0 max=250 step=2 value=0>
+		<br>
+		<button id="calculate">Calculate</button>
+		<div id="result">
+			You will need:
+			<br />
+			<span id="fp" class="result"></span> First encounters with Pokerus
+			<br />
+			<span id="cp" class="result"></span> Chain encounters with Pokerus
+			<br />
+			<span id="fpp" class="result"></span> First encounters with Pokerus
+			<br />
+			<span id="cpp" class="result"></span> Chain encounters with Pokerus
+			<br />
+			Total EVs: <span id="total" class="result"></span>
+			<br />
+			Verdict: <span id="verdict" class="result"></span>
+		</div>
+	</div>
+</body>
+
+<script>
+
+	$(document).ready(function(){
+
+		function calculate() {
+
+			var base = parseInt($('#base').val());
+			var firstEncounter = base;
+			var chainEncounter = 2*base;
+			var firstWithPkrs = 2*base;
+			var chainWithPkrs = 2*2*base;
+			var firstWithPower = base+8;
+			var chainWithPower = 2*(base+8);
+			var firstWithPkrsAndPower = 2*(base+8);
+			var chainWithPkrsAndPower = 2*2*(base+8);
+
+			var target = parseInt($('#target').val());
+			var starting = parseInt($('#starting').val());
+			var current = starting;
+			var firstEncounterCount = 0;
+			var chainEncounterCount = 0;
+			var firstWithPkrsCount = 0;
+			var chainWithPkrsCount = 0;
+			var firstWithPowerCount = 0;
+			var chainWithPowerCount = 0;
+			var firstWithPkrsAndPowerCount = 0;
+			var chainWithPkrsAndPowerCount = 0;
+
+			if (firstWithPkrsAndPower+current<=target){
+				current += firstWithPkrsAndPower;
+				firstWithPkrsAndPowerCount++;
+			}
+			while (chainWithPkrsAndPower+current<=target){
+				current += chainWithPkrsAndPower;
+				chainWithPkrsAndPowerCount++;
+			}
+			if (firstWithPkrs+current<=target){
+				current += firstWithPkrs;
+				firstWithPkrsCount++;
+			}
+			while (chainWithPkrs+current<=target){
+				current += chainWithPkrs;
+				chainWithPkrsCount++;
+			}
+
+			while (firstWithPkrs+current<=target){
+				current += firstWithPkrs;
+				firstWithPkrsCount++;
+			}
+
+			// if (firstWithPower+current<target){
+			// 	current += firstWithPower;
+			// 	firstWithPowerCount++;
+			// }
+			// while (chainWithPower+current<target){
+			// 	current += chainWithPower;
+			// 	chainWithPowerCount++;
+			// }
+
+
+			$("#fp").html(firstWithPkrsCount);
+			$("#cp").html(chainWithPkrsCount);
+			$("#fpp").html(firstWithPkrsAndPowerCount);
+			$("#cpp").html(chainWithPkrsAndPowerCount);
+			$("#total").html(current);
+			if (current == target)
+				$("#verdict").html("Success, you can get the exact EVs!");
+			else
+				$("#verdict").html("You cannot acquire the exact amount of EVs with this configuration.<br />Try defeating Pokemon who give less EVs")
+
+		}
+
+		$("#calculate").click(function(){
+			calculate();
+		});
+	});
+
+</script>
