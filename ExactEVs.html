@@ -2,49 +2,101 @@
 
 <head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<title>SM: EV Training for Exact EVs Calculator</title>
 	<style>
-		#calculator {
-			margin: 20px;
-		}
 		.result {
 			font-weight: bold
 		}
 		input {
 			margin: 2px;
 		}
+		.container h1 {
+			text-align: center;
+		}
+		.container {
+			margin-top: 2em;
+		}
+
+
 	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-	<div id="calculator">
-		<span class="label">EVs each Pokemon you defeat give:</span>
+
+	<div class="container well">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1>
+					Sun/Moon Exact EV Training Calculator
+				</h1>
+			</div>
+		</div>
+		<hr>
+		<label for="name">EVs each Pokemon you defeat give:</label>
 		<br>
-		<input type="number" id="base" min=1 max=3 value=1>
+		<form action="javascript:void(0);">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-xs-12 col-sm-5 col-md-3">
+						<input type="number" id="base" class="form-control" min=1 max=3 value=1>
+					</div>
+				</div>
+			</div>
+			<label for="target">Target EVs (how many EVs you need to have):</label>
+			<br>
+			<div class="form-group">
+				<div class="row">
+					<div class="col-xs-12 col-sm-5 col-md-3">
+						<input type="number" id="target" class="form-control" min=2 max=252 step=2 value=128>
+					</div>
+				</div>
+			</div>
+			<label for="starting">Starting EVs (how many EVs your Pokemon currently has):</label>
+			<br>
+			<div class="form-group">
+				<div class="row">
+					<div class="col-xs-12 col-sm-5 col-md-3">
+						<input type="number" id="starting" class="form-control" min=0 max=250 step=2 value=0>
+					</div>
+				</div>
+			</div>
+			<br>
+			<button id="calculate" class="btn btn-default">Calculate</button>
+			<button type="reset" class="btn btn-default" value="Reset">Reset</button>
+		</form>
 		<br>
-		<span class="label">Target EVs (how many EVs you need to have):</span>
-		<br>
-		<input type="number" id="target" min=2 max=252 step=2 value=128>
-		<br>
-		<span class="label">Starting EVs (how many EVs your Pokemon currently has):</span>
-		<br>
-		<input type="number" id="starting" min=0 max=250 step=2 value=0>
-		<br>
-		<button id="calculate">Calculate</button>
-		<div id="result">
-			You will need to defeat:
-			<br />
-			<span id="fp" class="result"></span> First faints with Pokerus
-			<br />
-			<span id="cp" class="result"></span> Chain faints with Pokerus
-			<br />
-			<span id="fpp" class="result"></span> First faints with Pokerus and Power Item
-			<br />
-			<span id="cpp" class="result"></span> Chain faints with Pokerus and Power Item
-			<br />
-			Total EVs: <span id="total" class="result"></span>
-			<br />
-			Verdict: <span id="verdict" class="result"></span>
+
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+					<tr>
+						<td>First faints with Pokerus</td>
+						<td><span id="fp" class="result"></span></td>
+					</tr>
+					<tr>
+						<td>Chain faints with Pokerus</td>
+						<td><span id="cp" class="result"></span></td>
+					</tr>
+					<tr>
+						<td>First faints with Pokerus and Power Item</td>
+						<td><span id="fpp" class="result"></span> </td>
+					</tr>
+					<tr>
+						<td>Chain faints with Pokerus and Power Item</td>
+						<td><span id="cpp" class="result"></span> </td>
+					</tr>
+					<tr>
+						<td>Total EVs</td>
+						<td><span id="total" class="result"></span></td>
+					</tr>
+					<tr>
+						<td>Verdict</td>
+						<td><span id="verdict" class="result"></span></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </body>
@@ -107,22 +159,26 @@
 			// 	chainWithPowerCount++;
 			// }
 
-
-			$("#fp").html(firstWithPkrsCount);
-			$("#cp").html(chainWithPkrsCount);
-			$("#fpp").html(firstWithPkrsAndPowerCount);
-			$("#cpp").html(chainWithPkrsAndPowerCount);
-			$("#total").html(current);
+			fadeText("#fp", firstWithPkrsCount);
+			fadeText("#cp", chainWithPkrsCount);
+			fadeText("#fpp", firstWithPkrsAndPowerCount);
+			fadeText("#cpp", chainWithPkrsAndPowerCount);
+			fadeText("#total", current);
 			if (current == target)
-				$("#verdict").html("Success, you can get the exact EVs!");
+				fadeText("#verdict", "Success, you can get the exact EVs!");
 			else
-				$("#verdict").html("You cannot acquire the exact amount of EVs with this configuration.<br />Try defeating Pokemon who give less EVs")
-
+				fadeText("#verdict", "You cannot acquire the exact amount of EVs with this configuration.<br />Try defeating Pokemon who give less EVs");
 		}
 
 		$("#calculate").click(function(){
 			calculate();
 		});
 	});
+
+	function fadeText(object, text){
+		$(object).fadeOut(function() {
+			$(this).text(text)
+		}).fadeIn();
+	}
 
 </script>
