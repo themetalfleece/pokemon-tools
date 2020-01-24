@@ -1,0 +1,191 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>HP EV combinations for odd/even stat</title>
+    <style>
+        .container {
+            margin-top: 2em;
+        }
+
+        .container h1 {
+            text-align: center;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+    <div class="container well">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1>
+                    HP EV combinations for odd/even stat
+                </h1>
+            </div>
+        </div>
+        <hr>
+        <div style="text-align: center;">
+            The purpose of this tool is to see what HP EVs you need to give your Pokémon for its stat to be odd/even at
+            level 50 (which is used in online battles).
+            <br />
+            You can use the "HP EVs at level 100" from a online guide, like Smogon. So, if the "Base Stat & HP EVs at level 100" combination produce an even HP stat, you'll get suggestions of all the closest EVs which produce an even HP stat at level 50.
+        </div>
+        <hr>
+        <div style="text-align:center;">
+            <form action="javascript:void(0);">
+                <label for="base-stat">Base stat:</label>
+                <br>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+                            <input type="number" id="base-stat" class="form-control text-center" min=2 max=255 step=1
+                                value=80 />
+                        </div>
+                    </div>
+                </div>
+                <label for="evs-at-100">HP EVs at level 100:</label>
+                <br>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+                            <input type="number" id="evs-at-100" class="form-control text-center" min=0 max=252 step=4
+                                value=0 />
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <br />
+            Those are the EVs combinations which can keep the HP stat <b><span id="odd-or-even"></span></b>. If 2
+            different EVs produce the same stat, you should choose the lowest one.
+            <br />
+            <div class="table-responsive">
+                <table class="table">
+                    <th>Level</th>
+                    <th>HP EVs</th>
+                    <th>HP Stat</th>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container well">
+        <a href="../index.html">More info/tools</a>
+    </div>
+
+</body>
+
+<script>
+    $(document).ready(function () {
+
+        const isEven = (num) => num % 2 === 0;
+        const isOdd = (num) => !isEven(num);
+
+        const getHp = (props) => {
+            const { level, base, EVs, IVs } = props;
+
+            return Math.floor(((2 * base + IVs + Math.floor(EVs / 4)) * level / 100) + level + 10);
+        };
+
+        const getOddEvenEVs = (props) => {
+            const { level, base, IVs } = props;
+
+            const odd = [];
+            const even = [];
+
+            for (let EVs = 0; EVs <= 252; EVs += 4) {
+                const hpStat = getHp({ level, base, EVs, IVs });
+                if (isOdd(hpStat)) {
+                    odd.push(EVs);
+                } else {
+                    even.push(EVs);
+                }
+            }
+
+            return { odd, even };
+        };
+
+        const $baseStat = $('#base-stat');
+        const $evsAt100 = $('#evs-at-100');
+        const $oddOrEven = $('#odd-or-even');
+        const $tableBody = $('#table-body');
+
+        const calculateAndRender = () => {
+            const baseHp = +$baseStat.val();
+            const evsAt100 = +$evsAt100.val();
+
+            const IVs = 31;
+
+            const hpStatAt100 = getHp({
+                level: 100,
+                EVs: evsAt100,
+                IVs,
+                base: baseHp,
+            });
+
+            const isOddAtLvl100 = isOdd(hpStatAt100);
+            $oddOrEven.text(isOddAtLvl100 ? 'odd' : 'even');
+
+            const { odd, even } = getOddEvenEVs({
+                level: 50,
+                base: baseHp,
+                IVs,
+            });
+
+            const evValuesToUse = isOddAtLvl100 ? odd : even;
+
+            const closestEVsValues = [];
+            for (const evValue of evValuesToUse) {
+                if (Math.abs(evValue - evsAt100) <= 24) {
+                    closestEVsValues.push(evValue);
+                }
+            }
+
+            let tableBodyHtml = '';
+
+            tableBodyHtml += `
+                <tr class="info">
+                    <td> level 100 </td>
+                    <td> ${evsAt100} </td>
+                    <td> ${hpStatAt100} </ts>
+                </tr>
+            `;
+
+            for (const closestEVsValue of closestEVsValues) {
+                const hpStat = getHp({
+                    level: 50,
+                    EVs: closestEVsValue,
+                    IVs,
+                    base: baseHp,
+                });
+
+                let rowClass = '';
+                if (closestEVsValue === evsAt100) {
+                    rowClass = 'success';
+                }
+
+                tableBodyHtml += `
+                    <tr class="${rowClass}">
+                        <td> level 50 </td>
+                        <td> ${closestEVsValue} </td>
+                        <td> ${hpStat} </td>
+                    </tr>
+                `;
+            }
+
+            $tableBody.html(tableBodyHtml);
+        }
+
+        $baseStat.on('input', () => {
+            calculateAndRender();
+        });
+        $evsAt100.on('input', () => {
+            calculateAndRender();
+        });
+
+        calculateAndRender();
+    });
+</script>
