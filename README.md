@@ -1,4 +1,3 @@
-# sunmoon
-Applications regarding Pokemon Sun/Moon
+# Pokémon Tools
 
-[Webpage index](https://themetalfleece.github.io/sunmoon/)
+[Webpage index](https://themetalfleece.github.io/pokemon-tools/)

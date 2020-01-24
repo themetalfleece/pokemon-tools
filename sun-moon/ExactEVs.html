@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 
 <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" defer></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<title>SM: EV Training for Exact EVs Calculator</title>
 	<style>
 		.result {
 			font-weight: bold
 		}
+
 		input {
 			margin: 2px;
 		}
+
 		.container h1 {
 			text-align: center;
 		}
+
 		.container {
 			margin-top: 2em;
 		}
 
 		input[type=radio]:hover {
-			cursor:pointer;
+			cursor: pointer;
 		}
-
-
 	</style>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -60,7 +62,8 @@
 				<div class="form-group">
 					<div class="row">
 						<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
-							<input type="number" id="target" class="form-control text-center" onClick="this.select();" min=2 max=252 step=2 value=128>
+							<input type="number" id="target" class="form-control text-center" onClick="this.select();"
+								min=2 max=252 step=2 value=128>
 						</div>
 					</div>
 				</div>
@@ -69,13 +72,14 @@
 				<div class="form-group">
 					<div class="row">
 						<div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
-							<input type="number" id="starting" class="form-control text-center" onClick="this.select();" min=0 max=250 step=2 value=0>
+							<input type="number" id="starting" class="form-control text-center" onClick="this.select();"
+								min=0 max=250 step=2 value=0>
 						</div>
 					</div>
 				</div>
 				<div class="btn-group">
-				<button type="reset" class="btn btn-warning" value="Reset" id="reset">Reset</button>
-				<button id="calculate" class="btn btn-success">Calculate</button>
+					<button type="reset" class="btn btn-warning" value="Reset" id="reset">Reset</button>
+					<button id="calculate" class="btn btn-success">Calculate</button>
 				</div>
 			</form>
 		</div>
@@ -113,25 +117,24 @@
 		</div>
 	</div>
 	<div class="container well">
-		<a href="index.html">More info/tools</a> 
+		<a href="index.html">More info/tools</a>
 	</div>
 </body>
 
 <script>
-
-	$(document).ready(function(){
+	$(document).ready(function () {
 
 		function calculate() {
 
 			var base = parseInt($('input[name="base"]:checked').val());
 			var firstEncounter = base;
-			var chainEncounter = 2*base;
-			var firstWithPkrs = 2*base;
-			var chainWithPkrs = 2*2*base;
-			var firstWithPower = base+8;
-			var chainWithPower = 2*(base+8);
-			var firstWithPkrsAndPower = 2*(base+8);
-			var chainWithPkrsAndPower = 2*2*(base+8);
+			var chainEncounter = 2 * base;
+			var firstWithPkrs = 2 * base;
+			var chainWithPkrs = 2 * 2 * base;
+			var firstWithPower = base + 8;
+			var chainWithPower = 2 * (base + 8);
+			var firstWithPkrsAndPower = 2 * (base + 8);
+			var chainWithPkrsAndPower = 2 * 2 * (base + 8);
 
 			var target = parseInt($('#target').val());
 			var starting = parseInt($('#starting').val());
@@ -146,34 +149,25 @@
 			var chainWithPkrsAndPowerCount = 0;
 
 
-			while (chainWithPkrsAndPower+current<=target){
+			while (chainWithPkrsAndPower + current <= target) {
 				current += chainWithPkrsAndPower;
 				chainWithPkrsAndPowerCount++;
 			}
 
-			while (chainWithPkrs+current<=target){
+			while (chainWithPkrs + current <= target) {
 				current += chainWithPkrs;
 				chainWithPkrsCount++;
 			}
 
-			while (firstWithPkrsAndPower+current<=target){
+			while (firstWithPkrsAndPower + current <= target) {
 				current += firstWithPkrsAndPower;
 				firstWithPkrsAndPowerCount++;
 			}
 
-			while (firstWithPkrs+current<=target){
+			while (firstWithPkrs + current <= target) {
 				current += firstWithPkrs;
 				firstWithPkrsCount++;
 			}
-
-			// if (firstWithPower+current<target){
-			// 	current += firstWithPower;
-			// 	firstWithPowerCount++;
-			// }
-			// while (chainWithPower+current<target){
-			// 	current += chainWithPower;
-			// 	chainWithPowerCount++;
-			// }
 
 			fadeText("#fp", firstWithPkrsCount);
 			fadeText("#cp", chainWithPkrsCount);
@@ -186,17 +180,17 @@
 				fadeText("#verdict", "You cannot acquire the exact amount of EVs with this configuration. Try defeating Pokemon who give less EVs");
 		}
 
-		$("#calculate").click(function(){
+		$("#calculate").click(function () {
 			calculate();
 		});
 
-		$("#reset").click(function(){
+		$("#reset").click(function () {
 			$('input[name="base"][value=1]').prop('checked', true);
 		});
 	});
 
-	function fadeText(object, text){
-		$(object).fadeOut(function() {
+	function fadeText(object, text) {
+		$(object).fadeOut(function () {
 			$(this).text(text)
 		}).fadeIn();
 	}
